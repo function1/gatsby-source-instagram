@@ -2,7 +2,7 @@
 const axios = require(`axios`)
 const cheerio = require(`cheerio`)
 
-const parseResponse = response => {
+const parseResponse = (response) => {
   const $ = cheerio.load(response.data)
   const scripts = $(`html > body > script`)
   // Code smells #40 and #42
@@ -21,11 +21,12 @@ const parseResponse = response => {
 export async function scrapingInstagramPosts({ username }) {
   return axios
     .get(`https://www.instagram.com/${username}/`)
-    .then(response => {
+    .then((response) => {
       const data = parseResponse(response)
+      console.log(data)
       const photos = []
       data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges.forEach(
-        edge => {
+        (edge) => {
           if (edge.node) {
             photos.push(edge.node)
           }
@@ -33,7 +34,7 @@ export async function scrapingInstagramPosts({ username }) {
       )
       return photos
     })
-    .catch(err => {
+    .catch((err) => {
       console.warn(`\nCould not fetch instagram posts. Error status ${err}`)
       return null
     })
@@ -42,11 +43,11 @@ export async function scrapingInstagramPosts({ username }) {
 export async function scrapingInstagramHashtags({ hashtag }) {
   return axios
     .get(`https://www.instagram.com/explore/tags/${hashtag}/`)
-    .then(response => {
+    .then((response) => {
       const data = parseResponse(response)
       const photos = []
       data.TagPage[0].graphql.hashtag.edge_hashtag_to_media.edges.forEach(
-        edge => {
+        (edge) => {
           if (edge.node) {
             photos.push(edge.node)
           }
@@ -54,7 +55,7 @@ export async function scrapingInstagramHashtags({ hashtag }) {
       )
       return photos
     })
-    .catch(err => {
+    .catch((err) => {
       console.warn(
         `\nCould not fetch instagram posts from hashtag. Error status ${err}`
       )
@@ -65,7 +66,7 @@ export async function scrapingInstagramHashtags({ hashtag }) {
 export async function scrapingInstagramUser({ username }) {
   return axios
     .get(`https://www.instagram.com/${username}/`)
-    .then(response => {
+    .then((response) => {
       const data = parseResponse(response)
       const { user } = data.ProfilePage[0].graphql
       const infos = {
@@ -80,7 +81,7 @@ export async function scrapingInstagramUser({ username }) {
       }
       return infos
     })
-    .catch(err => {
+    .catch((err) => {
       console.warn(`\nCould not fetch instagram user. Error status ${err}`)
       return null
     })
@@ -97,20 +98,22 @@ export async function apiInstagramPosts({
     .get(
       `https://graph.facebook.com/v3.1/${instagram_id}/media?fields=media_url,thumbnail_url,caption,media_type,like_count,shortcode,timestamp,comments_count,username&limit=${paginate}&access_token=${access_token}`
     )
-    .then(async response => {
+    .then(async (response) => {
       const results = []
       results.push(...response.data.data)
       // if maxPosts option specified, then check if there is a next field in the response data and the results' length <= maxPosts
       // otherwise, fetch as more as it can
       while (
-        maxPosts ? (response.data.paging.next && results.length <= maxPosts) : response.data.paging.next
+        maxPosts
+          ? response.data.paging.next && results.length <= maxPosts
+          : response.data.paging.next
       ) {
         response = await axios(response.data.paging.next)
         results.push(...response.data.data)
       }
       return maxPosts ? results.slice(0, maxPosts) : results
     })
-    .catch(async err => {
+    .catch(async (err) => {
       console.warn(
         `\nCould not get instagram posts using the Graph API. Error status ${err}`
       )
