@@ -19,11 +19,19 @@ const parseResponse = (response) => {
 }
 
 export async function scrapingInstagramPosts({ username }) {
+  console.log(`Starting scraping posts for ${username}`)
   return axios
     .get(`https://www.instagram.com/${username}/`)
     .then((response) => {
+      console.log("----------\nAfter Response")
+      console.log(response)
       const data = parseResponse(response)
+      console.log("----------\nAfter parseResponse")
       console.log(data)
+      console.log("----------\nAfter parseResponse")
+      console.log(data.ProfilePage[0])
+      console.log("----------\nAfter parseResponse")
+      console.log(data.ProfilePage[0].graphql)
       const photos = []
       data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges.forEach(
         (edge) => {
