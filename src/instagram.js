@@ -29,7 +29,7 @@ export async function scrapingInstagramPosts({ username }) {
     })
     .then((response) => {
       console.log("----------\nAfter Response")
-      console.log(response)
+      console.log(response.data)
       const data = parseResponse(response)
       console.log("----------\nAfter parseResponse")
       console.log(data)
