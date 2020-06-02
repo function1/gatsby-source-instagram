@@ -19,7 +19,7 @@ const parseResponse = (response) => {
 }
 
 export async function scrapingInstagramPosts({ username }) {
-  console.log(`Starting scraping posts for ${username}`)
+  console.log(`Starting scraping posts with fake UA for ${username}`)
   return axios
     .get(`https://www.instagram.com/${username}/`, {
       headers: {
