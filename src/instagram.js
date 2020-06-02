@@ -21,7 +21,12 @@ const parseResponse = (response) => {
 export async function scrapingInstagramPosts({ username }) {
   console.log(`Starting scraping posts for ${username}`)
   return axios
-    .get(`https://www.instagram.com/${username}/`)
+    .get(`https://www.instagram.com/${username}/`, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246",
+      },
+    })
     .then((response) => {
       console.log("----------\nAfter Response")
       console.log(response)
